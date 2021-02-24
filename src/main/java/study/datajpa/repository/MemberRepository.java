@@ -11,7 +11,7 @@ import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     List<Member> findByUsernameAndAgeGreaterThan(String username, int age);
 
     @Query(name = "Member.findByUsername")
@@ -60,4 +60,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             value = @QueryHint(name = "org.hibernate.readOnly", value = "true")
     )
     Member findReadOnlyByUsername(String username);
+
+    List<UsernameOnly> findProjectionByUsername(@Param("username") String username);
+
+    @Query(value = "select * from member where username = ?", nativeQuery = true)
+    Member findByNativeQuery(String username);
 }
